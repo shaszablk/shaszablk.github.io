@@ -45,7 +45,10 @@ img,video{display:block;max-width:100%}
   background:var(--bg);border-bottom:1px solid var(--line);
 }
 #logo{display:flex;align-items:center;gap:12px;font-weight:400;font-size:17px;letter-spacing:.06em}
-#logo img{width:40px;height:40px;border-radius:50%}
+#logo-btn{background:none;border:0;padding:0;cursor:zoom-in;display:block;border-radius:50%;transition:transform .3s}
+#logo-btn:hover{transform:scale(1.08)}
+#logo img{width:40px;height:40px;border-radius:50%;display:block}
+#lb.round img{border-radius:50%;max-width:min(80vw,80vh);max-height:min(80vw,80vh)}
 #nav{display:flex;gap:28px}
 #nav a{font-size:12px;letter-spacing:.24em;text-transform:uppercase;opacity:.85;transition:opacity .2s}
 #nav a:hover{opacity:1}
@@ -161,7 +164,10 @@ footer{padding:32px;border-top:1px solid var(--line);display:flex;justify-conten
 <body>
 
 <header id="header">
-  <a id="logo" href="#hero"><img src="assets/logo.png" alt="">shasza.blk</a>
+  <div id="logo">
+    <button id="logo-btn" aria-label="Open logo"><img src="assets/logo.png" alt=""></button>
+    <a href="#hero">shasza.blk</a>
+  </div>
   <button id="menu-btn" aria-label="Menu">Menu</button>
   <nav id="nav">
     <a href="#work">Work</a>
@@ -280,7 +286,8 @@ if (WORKS.length) {
 }
 
 const lb = document.getElementById('lb');
-function openLb(src) { lb.querySelector('img').src = src; lb.classList.add('open'); }
+function openLb(src, round) { lb.querySelector('img').src = src; lb.classList.toggle('round', !!round); lb.classList.add('open'); }
+document.getElementById('logo-btn').onclick = () => openLb('assets/logo-large.jpg', true);
 lb.onclick = () => lb.classList.remove('open');
 document.addEventListener('keydown', e => { if (e.key === 'Escape') lb.classList.remove('open'); });
 
