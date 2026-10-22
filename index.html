@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>shasza.blk</title>
-<meta name="description" content="shasza.blk — Italian blackwork tattoo artist, guesting across Europe and based in London, Berlin and Milan. Portfolio, info and booking.">
+<meta name="description" content="shasza.blk — Italian blackwork tattoo artist based in Milano, guesting across Europe: London, Berlin, Zurich. Portfolio, info and booking.">
 <meta property="og:title" content="shasza.blk">
 <meta property="og:image" content="assets/poster.jpg">
 <link rel="icon" type="image/png" href="assets/favicon.png">
@@ -196,7 +196,7 @@ footer{padding:32px;border-top:1px solid var(--line);display:flex;justify-conten
   <div class="label"><span>About</span></div>
   <div class="wrap">
     <div class="text">
-      <p class="lead">Italian tattooer, guesting across Europe. You can always find me in London, Berlin and Milan.</p>
+      <p class="lead">Italian tattooer guesting across Europe: Milano, London, Berlin, Zurich. Currently based in Milano.</p>
       <p>As a child I started drawing from life, and figurative art has stayed with me ever since. I fell in love with tattooing during my first years of artistic training, and I have been tattooing since 2013, moving through different styles before finding my own.</p>
       <p>My work is blackwork. I build dramatic, sharp subjects and concepts through high contrast and stippling: dark slender creatures, weapons, forms taken from medieval imagery and from organic, bio-inspired shapes.</p>
       <p>Most of my work is freehand. I draw directly on the skin, following the lines and movement of the body, so every piece grows with its shape and belongs only to the person who wears it.</p>
@@ -227,7 +227,7 @@ footer{padding:32px;border-top:1px solid var(--line);display:flex;justify-conten
       <h3>Where to find me</h3>
       <button class="city" data-city="London">London</button><br>
       <button class="city" data-city="Berlin">Berlin</button><br>
-      <button class="city" data-city="Milan">Milan</button>
+      <button class="city" data-city="Milano">Milano</button>
     </div>
     <div>
       <h3>Social</h3>
@@ -299,6 +299,14 @@ document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click
   else document.getElementById(id).scrollIntoView();
 }));
 if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+
+// Video della home: se il browser blocca l'autoplay (es. iPhone in risparmio energetico) parte al primo tocco/scroll
+const heroVideo = document.querySelector('#hero video');
+heroVideo.muted = true;
+const playHero = () => heroVideo.play().catch(() => {});
+playHero();
+['touchstart', 'click', 'scroll', 'keydown'].forEach(ev => window.addEventListener(ev, playHero, { once: true, passive: true }));
+document.addEventListener('visibilitychange', () => { if (!document.hidden) playHero(); });
 
 const nav = document.getElementById('nav');
 document.getElementById('menu-btn').onclick = () => nav.classList.toggle('open');
