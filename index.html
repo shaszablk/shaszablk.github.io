@@ -128,17 +128,18 @@ footer{padding:32px;border-top:1px solid var(--line);display:flex;justify-conten
 /* Mappa delle città — bianco su nero */
 /* Mappa della città: immagine traslucida dietro la sezione Booking */
 #booking{position:relative;overflow:hidden}
-#booking > *:not(#map):not(#map-credit):not(#map-pin){position:relative;z-index:1}
-#map{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .8s ease;pointer-events:none;
-  -webkit-mask-image:radial-gradient(ellipse at 75% 65%,#000 25%,transparent 75%);mask-image:radial-gradient(ellipse at 75% 65%,#000 25%,transparent 75%)}
+#booking > *:not(#map):not(#map-credit){position:relative;z-index:1}
+#map{position:absolute;max-width:none;opacity:0;transition:opacity .8s ease;pointer-events:none;
+  -webkit-mask-image:radial-gradient(circle at center,#000 10%,transparent 50%);mask-image:radial-gradient(circle at center,#000 10%,transparent 50%)}
 #map.show{opacity:.3}
 #map-credit{position:absolute;right:32px;bottom:16px;font-family:'Inter Tight',sans-serif;font-size:10px;color:var(--dim);opacity:0;transition:opacity .8s}
 #map-credit.show{opacity:1}
-#map-pin{position:absolute;right:32px;bottom:64px;display:flex;align-items:center;gap:12px;font-family:'Inter Tight',sans-serif;font-size:10px;letter-spacing:.08em;color:var(--accent);opacity:0;transition:opacity .8s;pointer-events:none;white-space:nowrap}
+#map-pin{position:absolute;left:120px;top:calc(50% + 12px);transform:translateY(-50%);display:flex;align-items:center;gap:12px;font-family:'Inter Tight',sans-serif;font-size:10px;letter-spacing:.08em;color:var(--accent);opacity:0;transition:opacity .8s;pointer-events:none;white-space:nowrap}
 #map-pin.show{opacity:.75}
 #map-pin i{width:6px;height:6px;border-radius:50%;background:var(--accent);outline:1px solid var(--accent);outline-offset:6px;margin:0 7px}
 #map-credit a{color:var(--dim)}
 #booking .city.active{color:var(--accent)}
+#booking .where{position:relative}
 
 /* ─── MOBILE ─── */
 @media (max-width:760px){
@@ -157,7 +158,6 @@ footer{padding:32px;border-top:1px solid var(--line);display:flex;justify-conten
   #scroll-hint{display:none}
   section.block{padding:80px 16px}
   #map-credit{right:16px;bottom:10px}
-  #map-pin{right:16px;bottom:44px}
   #grid{grid-template-columns:repeat(2,1fr);gap:4px}
   #about .wrap{grid-template-columns:1fr;gap:40px}
   #booking .info{grid-template-columns:1fr}
@@ -213,7 +213,6 @@ footer{padding:32px;border-top:1px solid var(--line);display:flex;justify-conten
 
 <section id="booking" class="block">
   <img id="map" alt="" aria-hidden="true">
-  <div id="map-pin"><span></span><i></i></div>
   <div id="map-credit">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors · © OpenMapTiles</div>
   <div class="label"><span>Booking</span></div>
   <div class="howto">
@@ -228,8 +227,9 @@ footer{padding:32px;border-top:1px solid var(--line);display:flex;justify-conten
   <div class="big"><a href="mailto:shasza.blk@gmail.com">shasza.blk@gmail.com</a></div>
   <div class="phone"><a href="tel:+447565472242">+44 7565 472242</a></div>
   <div class="info">
-    <div>
+    <div class="where">
       <h3>Where to find me</h3>
+      <div id="map-pin"><i></i><span></span></div>
       <button class="city" data-city="London" data-coord="51.5422° N, 0.1472° W">London</button><br>
       <button class="city" data-city="Berlin" data-coord="52.5187° N, 13.4659° E">Berlin</button><br>
       <button class="city" data-city="Milano" data-coord="45.4526° N, 9.1812° E">Milano</button><br>
@@ -244,6 +244,7 @@ footer{padding:32px;border-top:1px solid var(--line);display:flex;justify-conten
 
 <footer>
   <span>© <span id="year"></span> shasza.blk</span>
+  <span>Site by <a href="https://caterinasavoia.com" target="_blank" rel="noopener">Caterina Savoia</a></span>
   <a href="#hero">Back to top ↑</a>
 </footer>
 
@@ -321,13 +322,23 @@ nav.querySelectorAll('a').forEach(a => a.onclick = () => nav.classList.remove('o
 // Mappa: tocca una città e la sua mappa appare traslucida dietro la sezione; ritocca per nasconderla
 const mapImg = document.getElementById('map'), mapCredit = document.getElementById('map-credit'), mapPin = document.getElementById('map-pin');
 const cities = document.querySelectorAll('.city');
+// la mappa è un quadrato centrato sul punto viola, grande quanto basta a coprire la sezione
+const booking = document.getElementById('booking'), dot = mapPin.firstChild;
+function placeMap() {
+  const r = booking.getBoundingClientRect(), d = dot.getBoundingClientRect();
+  const x = d.left + d.width / 2 - r.left, y = d.top + d.height / 2 - r.top;
+  const S = 2 * Math.max(x, r.width - x, y, r.height - y);
+  Object.assign(mapImg.style, {width: S + 'px', height: S + 'px', left: x - S / 2 + 'px', top: y - S / 2 + 'px'});
+}
+addEventListener('resize', placeMap);
 cities.forEach(b => b.onclick = () => {
   const on = !b.classList.contains('active');
   cities.forEach(c => c.classList.remove('active'));
   mapImg.classList.remove('show'); mapCredit.classList.remove('show'); mapPin.classList.remove('show');
   if (!on) return;
   b.classList.add('active');
-  mapPin.firstChild.textContent = b.dataset.coord;
+  mapPin.lastChild.textContent = b.dataset.coord;
+  placeMap();
   mapImg.onload = () => { mapImg.classList.add('show'); mapCredit.classList.add('show'); mapPin.classList.add('show'); };
   mapImg.src = `assets/maps/${b.dataset.city.toLowerCase()}.svg`;
 });
