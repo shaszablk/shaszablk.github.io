@@ -138,9 +138,6 @@ footer{padding:32px;border-top:1px solid var(--line);display:flex;justify-conten
 #map-label.show{opacity:.75}
 #map-credit a{color:var(--dim)}
 #booking .city.active{color:var(--accent)}
-#booking .loc{display:flex;align-items:baseline;gap:14px}
-#booking .coord{font-family:'Inter Tight',sans-serif;font-size:10px;letter-spacing:.08em;color:var(--dim);opacity:.55;transition:opacity .4s,color .4s}
-#booking .loc:has(.active) .coord{opacity:1;color:var(--accent)}
 
 /* ─── MOBILE ─── */
 @media (max-width:760px){
@@ -231,10 +228,10 @@ footer{padding:32px;border-top:1px solid var(--line);display:flex;justify-conten
   <div class="info">
     <div>
       <h3>Where to find me</h3>
-      <div class="loc"><button class="city" data-city="London">London</button><span class="coord">51.5422° N, 0.1472° W</span></div>
-      <div class="loc"><button class="city" data-city="Berlin">Berlin</button><span class="coord">52.5187° N, 13.4659° E</span></div>
-      <div class="loc"><button class="city" data-city="Milano">Milano</button><span class="coord">45.4526° N, 9.1812° E</span></div>
-      <div class="loc"><button class="city" data-city="Zurich">Zurich</button><span class="coord">47.4876° N, 8.3039° E</span></div>
+      <button class="city" data-city="London" data-coord="51.5422° N, 0.1472° W">London</button><br>
+      <button class="city" data-city="Berlin" data-coord="52.5187° N, 13.4659° E">Berlin</button><br>
+      <button class="city" data-city="Milano" data-coord="45.4526° N, 9.1812° E">Milano</button><br>
+      <button class="city" data-city="Zurich" data-coord="47.4876° N, 8.3039° E">Zurich</button>
     </div>
     <div>
       <h3>Social</h3>
@@ -328,7 +325,7 @@ cities.forEach(b => b.onclick = () => {
   mapImg.classList.remove('show'); mapCredit.classList.remove('show'); mapLabel.classList.remove('show');
   if (!on) return;
   b.classList.add('active');
-  mapLabel.textContent = b.nextElementSibling.textContent;
+  mapLabel.textContent = b.dataset.coord;
   mapImg.onload = () => { mapImg.classList.add('show'); mapCredit.classList.add('show'); mapLabel.classList.add('show'); };
   mapImg.src = `assets/maps/${b.dataset.city.toLowerCase()}.svg`;
 });
