@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://shaszablk.com/sitemap.xml
